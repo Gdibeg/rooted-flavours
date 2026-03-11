@@ -1,19 +1,27 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useState } from "react";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+
+    setTimeout(() => {
+      setAdded(false);
+    }, 1200);
+  };
 
   return (
-   <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition duration-300 group border border-gray-100">
+    <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition duration-300 group border border-gray-100">
       <div className="relative overflow-hidden">
         <Link to={`/product/${product.id}`}>
           <img
             src={product.image}
             alt={product.name}
-            onError={(e) => {
-              e.target.src = "https://via.placeholder.com/400x300?text=Product+Image";
-            }}
             className="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
           />
         </Link>
@@ -40,10 +48,14 @@ export default function ProductCard({ product }) {
         </div>
 
         <button
-          onClick={() => addToCart(product)}
-          className="w-full bg-[#3b1f12] hover:bg-[#5a2f1d] text-white py-3 rounded-xl font-medium transition"
+          onClick={handleAddToCart}
+          className={`w-full py-3 rounded-xl font-medium transition ${
+            added
+              ? "bg-green-600 text-white"
+              : "bg-[#3b1f12] hover:bg-[#5a2f1d] text-white"
+          }`}
         >
-          Add to Cart
+          {added ? "Added ✓" : "Add to Cart"}
         </button>
       </div>
     </div>
